@@ -1,14 +1,12 @@
-from src.devices.base_device import BaseDevice
-
 class BaseController:
-    def __init__(self):
-        self.devices: list[BaseDevice] = []
+    def __init__(self, db):
+        self.devices = []
+        self.db = db
 
-    def register_device(self, device: BaseDevice):
+    def register_device(self, device):
         self.devices.append(device)
 
     def poll_devices(self):
-        results = {}
         for device in self.devices:
-            results[device.device_id] = device.read()
-        return results
+            value = device.read()
+            self.db.save(device.device_id, value)
